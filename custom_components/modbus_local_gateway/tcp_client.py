@@ -8,7 +8,6 @@ from typing import Any
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 from pymodbus.client import AsyncModbusTcpClient
-from pymodbus.constants import Defaults
 from pymodbus.exceptions import ConnectionException, ModbusException
 from pymodbus.framer import ModbusFramer
 from pymodbus.framer.socket_framer import ModbusSocketFramer
@@ -27,7 +26,7 @@ class AsyncModbusTcpClientGateway(AsyncModbusTcpClient):
     def __init__(
         self,
         host: str,
-        port: int = Defaults.TcpPort,
+        port: int = 502,
         framer: type[ModbusFramer] = ModbusSocketFramer,
         source_address: tuple[str, int] = None,
         **kwargs: Any,
@@ -73,7 +72,8 @@ class AsyncModbusTcpClientGateway(AsyncModbusTcpClient):
         async with self.lock:
             await self.connect()
             if not self.connected:
-                raise ConnectionException(f"Failed to connect to gateway - {self}")
+                _LOGGER.warning("Failed to connect to gateway - %s", self)
+                return data
 
             entity: ModbusContext
             for entity in entities:
@@ -116,7 +116,9 @@ class AsyncModbusTcpClientGateway(AsyncModbusTcpClient):
 
     @classmethod
     async def async_get_client_connection(
-        cls: AsyncModbusTcpClientGateway, hass: HomeAssistant, data: dict[str, Any]
+        cls: AsyncModbusTcpClientGateway,
+        hass: HomeAssistant,  # pylint: disable=unused-argument
+        data: dict[str, Any],
     ):
         """Gets a modbus client object"""
         key = f"{data[CONF_HOST]}:{data[CONF_PORT]}"

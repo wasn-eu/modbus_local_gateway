@@ -1,4 +1,4 @@
-# Modbus Local Gateway component with Prefix
+# Modbus Local Gateway component
 
 This is a Home Assistant integration to support modbus devices running behind a Modbus TCP gateway.
 
@@ -10,7 +10,6 @@ Slave devices for testing have been:
 * Growatt MIN-6000-TL-XH
 * Growatt MIC-2500-TL-X
 * Eastron SDM230
-* Eastron SDM630 (in progress)
 * Finder 7M.38
 * Finder 7M.24
 

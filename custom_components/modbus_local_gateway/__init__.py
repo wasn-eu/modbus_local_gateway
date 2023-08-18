@@ -7,7 +7,6 @@ from homeassistant.helpers import device_registry as dr
 
 from .const import (
     CONF_SLAVE_ID,
-    CONF_PREFIX,
     DOMAIN,
     OPTIONS_DEFAULT_REFRESH,
     OPTIONS_REFRESH,
@@ -31,7 +30,7 @@ async def async_setup_entry(
     device: dr.DeviceEntry = device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, f"ModbusGateway-{gateway_key}")},
-        default_name="Modbus Gateway",
+        name="Modbus Gateway",
         configuration_url=f"http://{entry.data[CONF_HOST]}/",
     )
 

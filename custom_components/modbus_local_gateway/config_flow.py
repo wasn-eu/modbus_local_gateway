@@ -15,8 +15,8 @@ from homeassistant.data_entry_flow import FlowResult
 from .const import (
     CONF_DEFAULT_PORT,
     CONF_DEFAULT_SLAVE_ID,
-    CONF_SLAVE_ID,
     CONF_PREFIX,
+    CONF_SLAVE_ID,
     DOMAIN,
     OPTIONS_DEFAULT_REFRESH,
     OPTIONS_REFRESH,
@@ -73,7 +73,7 @@ class ConfigFlowHandler(ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Initialise Modbus Local Gateway flow."""
-        self.client: AsyncModbusTcpClientGateway = None
+        self.client: AsyncModbusTcpClientGateway
         self.data = {}
 
     async def async_step_user(
@@ -84,7 +84,7 @@ class ConfigFlowHandler(ConfigFlow, domain=DOMAIN):
         host_opts = {}
         port_opts = {"default": CONF_DEFAULT_PORT}
         slave_opts = {"default": CONF_DEFAULT_SLAVE_ID}
-        prefix_opts = {"default": CONF_PREFIX}
+        prefix_opts = {"default": ""}
 
         if user_input is not None:
             self.client = await AsyncModbusTcpClientGateway.async_get_client_connection(
@@ -109,7 +109,7 @@ class ConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_HOST, **host_opts): str,
                     vol.Required(CONF_PORT, **port_opts): int,
                     vol.Required(CONF_SLAVE_ID, **slave_opts): int,
-                    vol.Required(CONF_PREFIX, **prefix_opts): str,
+                    vol.Optional(CONF_PREFIX, **prefix_opts): str,
                 }
             ),
             errors=errors,
@@ -131,7 +131,7 @@ class ConfigFlowHandler(ConfigFlow, domain=DOMAIN):
             step_id="device_type",
             data_schema=vol.Schema({vol.Required(CONF_FILENAME): vol.In(devices_data)}),
             errors=errors,
-        ) 
+        )
 
     async def async_create(self) -> FlowResult:
         """Create the entry if we can"""
